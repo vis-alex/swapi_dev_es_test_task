@@ -17,24 +17,6 @@ public class SwapiDevEsTestTaskApplication {
 
         FileUtil.downloadData("https://swapi.dev/api/planets?format=json");
 
-
-//        FileUtil.downloadFile(
-//                "https://swapi.dev/api/planets?format=json",
-//                "planets.json",
-//                false);
-//        FileUtil.writePlanetsAsJsonToFile(FileUtil.getJsonObjectFromFile("planets.json"));
-//
-//
-//        long result = FileUtil.getResultCount("planets.json");
-//        System.out.println(result);
-//
-//        if (result > 10) {
-//            long countPages = (long)Math.ceil(result / 10);
-//            System.out.println("countPages - " + countPages);
-//
-//        }
-
-
-
+        FileUtil.extractPlanetsInfoToJson();
     }
 }

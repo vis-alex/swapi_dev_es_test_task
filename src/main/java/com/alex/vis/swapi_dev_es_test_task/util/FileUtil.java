@@ -2,15 +2,18 @@ package com.alex.vis.swapi_dev_es_test_task.util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
 public final class FileUtil {
-    public static final String DOWNLOADED_FILES_DIRECTORY = "src/main/resources/downloaded_files";
+    private static final String DOWNLOADED_FILES_DIRECTORY = "src/main/resources/downloaded_files";
     private static int count = 0;
     private static final JSONParser parser = new JSONParser();
+
+    private static boolean isDownloaded = false;
 
     private FileUtil() {}
 
@@ -38,9 +41,9 @@ public final class FileUtil {
             in.close();
 
 
-            try (FileWriter file = new FileWriter(fileName, append)) {
-                file.write(response.toString());
-                file.flush();
+            try (FileWriter fileWriter = new FileWriter(fileName, append)) {
+                fileWriter.write(response.toString());
+                fileWriter.flush();
             }
 
         }catch(Exception e){
@@ -77,6 +80,40 @@ public final class FileUtil {
 
             JSONObject nextPageJsonObject = getJsonObjectFromFile(fileName);
             downloadPlanets(nextPageJsonObject);
+        }
+        isDownloaded = true;
+    }
+
+    public static void extractPlanetsInfoToJson() throws Exception {
+        File planetsDirectory = new File(DOWNLOADED_FILES_DIRECTORY);
+        File jsonPlanets = new File("src/main/resources/planets.json");
+
+        if (jsonPlanets.exists()) {
+            jsonPlanets.delete();
+        }
+
+        StringBuilder jsonResult = new StringBuilder();
+        try (FileWriter fileWriter = new FileWriter(jsonPlanets, true)) {
+
+            jsonResult.append("[");
+            while (true) {
+                if (isDownloaded) {
+                    for (File file : planetsDirectory.listFiles()) {
+                        JSONObject rootObject = getJsonObjectFromFile(file.getPath());
+                        String results = rootObject.get("results").toString();
+                        jsonResult.append(results, 1, results.length() - 1);
+                        jsonResult.append(",");
+                        System.out.println(results);
+                    }
+                    break;
+                }
+            }
+            jsonResult.deleteCharAt(jsonResult.length() - 1);
+            jsonResult.append("]");
+            fileWriter.write(jsonResult.toString());
+            fileWriter.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
