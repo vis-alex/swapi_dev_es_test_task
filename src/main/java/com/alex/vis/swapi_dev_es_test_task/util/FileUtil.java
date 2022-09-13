@@ -1,12 +1,17 @@
 package com.alex.vis.swapi_dev_es_test_task.util;
 
+import com.alex.vis.swapi_dev_es_test_task.domain.Planet;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public final class FileUtil {
     private static final String DOWNLOADED_FILES_DIRECTORY = "src/main/resources/downloaded_files";
@@ -64,6 +69,38 @@ public final class FileUtil {
         return null;
     }
 
+    public static List<Planet> convertJsonToPlanets() throws Exception {
+        ArrayList<Planet> planets = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        File directory = new File("src/main/resources/downloaded_files");
+
+        while (true) {
+            if (isDownloaded) {
+                for (File file : Objects.requireNonNull(directory.listFiles())) {
+                    JSONObject obj = getJsonObjectFromFile(file.getPath());
+
+                    JSONArray jsonArray = (JSONArray) obj.get("results");
+
+                    if (jsonArray != null) {
+                        int len = jsonArray.size();
+                        for (int i = 0; i < len; i++) {
+                            Planet planet = mapper.readValue(jsonArray.get(i).toString(), Planet.class);
+                            planets.add(planet);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        for (int i = 0; i < planets.size(); i++) {
+            System.out.println("Planet "  + (i + 1) + " :   " + planets.get(i));
+        }
+
+        return planets;
+    }
+
     public static void downloadPlanets(JSONObject rootJsonObject) throws Exception {
         String nextPageUrl;
         if (rootJsonObject.get("next") != null) {
@@ -112,9 +149,14 @@ public final class FileUtil {
             jsonResult.append("]");
             fileWriter.write(jsonResult.toString());
             fileWriter.flush();
+
+            //TODO -----------------------------------
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
+
+
 
 }
