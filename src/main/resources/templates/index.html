@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Find Planet</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+        <script src="scripts/hint.js"></script>
+    </head>
+
+    <body>
+        <form action="">
+            <input type="text"/>
+<!--            <input type="text"onkeyup="showHint(this.value)"></form><p>Подсказка: <span id="txtHint"></span></p>-->
+        </form>
+
+        <div id="planet">
+
+        </div>
+    </body>
+
+    <script>
+        $.get('/api/planets/Tatooine', function (data) {
+            console.log(data)
+
+            var table = "<table border='1' width='100px'>" +
+                    "<tr>" +
+                        "<td>" + "Name" + "</td>" +
+                        "<td>" + data.name + "</td>" +
+                    "</tr>" +
+                        "<td>" + "Rotation period" + "</td>" +
+                        "<td>" + data.rotation_period + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Orbital period" + "</td>" +
+                        "<td>" + data.orbital_period + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Diameter" + "</td>" +
+                        "<td>" + data.diameter + "</td>" +
+                    "/<tr>" +
+                    "<tr>" +
+                        "<td>" + "Climate" + "</td>" +
+                        "<td>" + data.climate + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Gravity" + "</td>" +
+                        "<td>" + data.gravity + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Terrain" + "</td>" +
+                        "<td>" + data.terrain + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Surface water" + "</td>" +
+                        "<td>" + data.surface_water + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Population" + "</td>" +
+                        "<td>" + data.population + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Residents" + "</td>" +
+                        "<td>" + data.residents + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Films" + "</td>" +
+                        "<td>" + data.films + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Created" + "</td>" +
+                        "<td>" + data.created + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td>" + "Edited" + "</td>" +
+                        "<td>" + data.edited + "</td>" +
+                    "<tr>" +
+                    "<tr>" +
+                        "<td>" + "Url" + "</td>" +
+                        "<td>" + data.url + "</td>" +
+                    "</tr>" +
+                "</table>"
+
+            $("#planet").html(table);
+        })
+    </script>
+</html>

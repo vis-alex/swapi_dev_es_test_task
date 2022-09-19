@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/planets")
+@RequestMapping("/api/planets")
 @RequiredArgsConstructor
 public class PlanetController {
     private final PlanetService planetService;
