@@ -16,6 +16,18 @@
 //     }
 // }
 
+function showHint(str) {
+        var xmlhttp = newXMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("planet").innerHTML = xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", "ajax.php?q=" + str, true);
+        xmlhttp.send();
+
+}
+
 function getPlanetInfo(planetName) {
     $.get('/api/planets/' + planetName, function (data) {
         console.log(data)

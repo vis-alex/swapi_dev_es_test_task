@@ -1,4 +1,4 @@
-package com.alex.vis.swapi_dev_es_test_task.util;
+package com.alex.vis.swapi_dev_es_test_task.helper;
 
 import com.alex.vis.swapi_dev_es_test_task.domain.Planet;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,67 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class FileUtil {
+public class InitialDownloading {
     private static final String DOWNLOADED_FILES_DIRECTORY = "src/main/resources/downloaded_files";
     private static int count = 0;
-    private static final JSONParser parser = new JSONParser();
-
+    private static  final JSONParser parser = new JSONParser();
     private static boolean isDownloaded = false;
 
-    private FileUtil() {}
 
-    public static void downloadData(String url) throws Exception {
+    public static void downloadData(String url) {
         File planetsDirectory = new File(DOWNLOADED_FILES_DIRECTORY);
         String filePath = planetsDirectory.getPath() + "/" + (++count) + ".json";
         downloadFile(url,  filePath , false);
-        downloadPlanets(FileUtil.getJsonObjectFromFile(filePath));
-    }
-
-    public static void downloadFile(String urlPath, String fileName, boolean append) throws Exception {
-        try {
-            URI url = new URI(urlPath);
-
-            HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
-            connection.setRequestMethod("GET");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-
-            try (FileWriter fileWriter = new FileWriter(fileName, append)) {
-                fileWriter.write(response.toString());
-                fileWriter.flush();
-            }
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-    //TODO THROW PARSE EXCEPTION
-    public static JSONObject getJsonObjectFromFile(String fileName) {
-
-        try (FileReader reader = new FileReader(fileName)){
-            return (JSONObject) parser.parse(reader);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        downloadPlanets(getJsonObjectFromFile(filePath));
     }
 
     public static List<Planet> convertJsonToPlanets() throws Exception {
         ArrayList<Planet> planets = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        File directory = new File("src/main/resources/downloaded_files");
+        File directory = new File(DOWNLOADED_FILES_DIRECTORY);
 
         while (true) {
             if (isDownloaded) {
@@ -99,26 +57,6 @@ public final class FileUtil {
         }
 
         return planets;
-    }
-
-    public static void downloadPlanets(JSONObject rootJsonObject) throws Exception {
-        String nextPageUrl;
-        if (rootJsonObject.get("next") != null) {
-            nextPageUrl = rootJsonObject.get("next").toString();
-            System.out.println(nextPageUrl);
-
-            String fileName = DOWNLOADED_FILES_DIRECTORY + "/" + (++count) + ".json";
-
-            downloadFile(
-                    nextPageUrl,
-                    fileName,
-                    false
-            );
-
-            JSONObject nextPageJsonObject = getJsonObjectFromFile(fileName);
-            downloadPlanets(nextPageJsonObject);
-        }
-        isDownloaded = true;
     }
 
     public static void extractPlanetsInfoToJson() throws Exception {
@@ -150,13 +88,68 @@ public final class FileUtil {
             fileWriter.write(jsonResult.toString());
             fileWriter.flush();
 
-            //TODO -----------------------------------
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
+    private static void downloadPlanets(JSONObject rootJsonObject) {
+        String nextPageUrl;
+        if (rootJsonObject.get("next") != null) {
+            nextPageUrl = rootJsonObject.get("next").toString();
+            System.out.println(nextPageUrl);
 
+            String fileName = DOWNLOADED_FILES_DIRECTORY + "/" + (++count) + ".json";
+
+            downloadFile(
+                    nextPageUrl,
+                    fileName,
+                    false
+            );
+
+            JSONObject nextPageJsonObject = getJsonObjectFromFile(fileName);
+            downloadPlanets(nextPageJsonObject);
+        }
+        isDownloaded = true;
+    }
+
+    private static  JSONObject getJsonObjectFromFile(String fileName) {
+
+        try (FileReader reader = new FileReader(fileName)){
+            return (JSONObject) parser.parse(reader);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static void downloadFile(String urlPath, String fileName, boolean append) {
+        try {
+            URI url = new URI(urlPath);
+
+            HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
+            connection.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+
+            try (FileWriter fileWriter = new FileWriter(fileName, append)) {
+                fileWriter.write(response.toString());
+                fileWriter.flush();
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 }
