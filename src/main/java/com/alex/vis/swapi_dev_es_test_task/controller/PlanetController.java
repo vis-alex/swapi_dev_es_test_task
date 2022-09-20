@@ -5,6 +5,9 @@ import com.alex.vis.swapi_dev_es_test_task.service.PlanetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/planets")
@@ -20,5 +23,10 @@ public class PlanetController {
     @PostMapping
     public void save(@RequestBody final Planet planet) {
         planetService.save(planet);
+    }
+
+    @GetMapping("/hint")
+    public List<String> getHint(@RequestParam(name = "name") String searchString) throws IOException {
+        return planetService.getHint(searchString);
     }
 }

@@ -81,15 +81,31 @@
                 })
             })
 
+            $(document).ready(function () {
+                $("#planet_input").keyup(function () {
+                    let input = document.getElementById("planet_input");
+                    let inpValue = input.valueOf().value;
+
+                    $.get('/api/planets/hint?name=' + inpValue, function (data) {
+                        console.log(data);
+                        // var ul = "" +
+
+                        // $("#hints").html(ul);
+                    })
+                })
+            })
         </script>
     </head>
 
     <body>
-            <input id="planet_input" type="text"/>
-<!--            <input type="text"onkeyup="showHint(this.value)"></form><p>Подсказка: <span id="txtHint"></span></p>-->
-            <button id="planet_button" onclick="getPlanetInfo(this)">Get Planet</button>
-        <div id="planet">
+        <input id="planet_input" type="text"/>
 
+        <div id="hints">
+        </div>
+        <!--            <input type="text"onkeyup="showHint(this.value)"></form><p>Подсказка: <span id="txtHint"></span></p>-->
+        <button id="planet_button" onclick="getPlanetInfo(this)">Get Planet</button>
+
+        <div id="planet">
         </div>
     </body>
 
