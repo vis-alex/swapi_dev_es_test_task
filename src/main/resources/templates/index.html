@@ -88,10 +88,31 @@
 
                     $.get('/api/planets/hint?name=' + inpValue, function (data) {
                         console.log(data);
-                        // var ul = "" +
 
-                        // $("#hints").html(ul);
+                        let list = document.getElementById("list");
+                        console.log(list);
+
+                        if (data.length === 0) {
+                            list.remove();
+                        } else {
+
+                            let ul = "<ul id='list'>" +
+                                "<li>" +
+                                data[0] +
+                                "</li>"
+                            "</ul>"
+
+                            $("#hints").html(ul);
+                        }
+
                     })
+                })
+            })
+
+
+            $(document).ready(function () {
+                $("#planet_button").click(function () {
+
                 })
             })
         </script>

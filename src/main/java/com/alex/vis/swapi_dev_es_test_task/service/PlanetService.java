@@ -4,8 +4,6 @@ import com.alex.vis.swapi_dev_es_test_task.domain.Planet;
 import com.alex.vis.swapi_dev_es_test_task.helper.InitialDownloading;
 import com.alex.vis.swapi_dev_es_test_task.repository.PlanetRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.spatial3d.geom.Plane;
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -59,8 +57,8 @@ public class PlanetService {
         SearchRequest searchRequest = new SearchRequest(INDEX_NAME);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-        searchSourceBuilder.query(QueryBuilders.matchQuery(searchString,"name")
-                .fuzziness(2));
+        searchSourceBuilder.query(QueryBuilders.matchQuery("name", searchString)
+                .fuzziness("AUTO"));
 
         searchRequest.source(searchSourceBuilder);
 
